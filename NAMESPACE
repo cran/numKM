@@ -1,0 +1,4 @@
+exportPattern("^[[:alpha:]]+")
+importFrom("survival", "survfit","survdiff")
+importFrom("graphics", "axis", "legend", "mtext", "par", "plot")
+importFrom("stats", "pchisq")
