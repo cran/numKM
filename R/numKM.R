@@ -1,5 +1,5 @@
 
-numKM=function(sfit,timeby=20,xlab="Time",ylab="Survival Probability",col=NULL,g.names=NULL){
+numKM=function(sfit,timeby=20,timemax=NULL,xlab="Time",ylab="Survival Probability",col=NULL,g.names=NULL,lwd=1){
 
   ngroup=length(sfit$strata)
 
@@ -16,6 +16,7 @@ numKM=function(sfit,timeby=20,xlab="Time",ylab="Survival Probability",col=NULL,g
     if(max(nchar(g.names))>nchar("Number at risk")){mai2=1.8}else{mai2=1.5}
 
     times=seq(0,max(sfit$time)+timeby,timeby)
+    if(!is.null(timemax)){times=times[which(times<=timemax)]}
     nrisk=summary(sfit,times=times,extend=TRUE)$n.risk
     if(max(nrisk)>100){gx=0.5}else{gx=0.3}
 
@@ -26,7 +27,7 @@ numKM=function(sfit,timeby=20,xlab="Time",ylab="Survival Probability",col=NULL,g
     if(is.null(col)){col=1:ngroup}
 
     par(mai=mai)
-    plot(sfit,col=col,ylab=ylab,xlab=xlab,axe=FALSE,xlim=c(0,max(times)))
+    plot(sfit,col=col,ylab=ylab,xlab=xlab,axe=FALSE,xlim=c(0,max(times)),lwd=lwd)
     axis(1,at=times);axis(2)
 
     if(ngroup==1){
@@ -95,11 +96,11 @@ numKM=function(sfit,timeby=20,xlab="Time",ylab="Survival Probability",col=NULL,g
       }
     }
 
-    legend("bottomright",lty=1,col=1:3,legend=g.names,bty="n")
+    legend("bottomright",lty=1,col=1:3,legend=g.names,bty="n",lwd=lwd)
 
     sdiff <- survdiff(eval(sfit$call$formula), data = eval(sfit$call$data))
     pval <- pchisq(sdiff$chisq, length(sdiff$n)-1, lower.tail = FALSE)
-    p <- ifelse(pval < 0.001, "p < 0.001", paste("p =", round(pval, 3)))
+    p <- ifelse(pval < 0.001, "p < 0.001", paste("p =", sprintf("%.3f",pval)))
 
     legend("bottomleft",lty=1,col="white",legend=p,bty="n")
 
